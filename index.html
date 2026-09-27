@@ -359,61 +359,6 @@
       gap: 10px;
     }
 
-    /* ============= SETUP PANEL ============= */
-    .setup-card {
-      background: white;
-      border-radius: 14px;
-      padding: 30px;
-      max-width: 550px;
-      margin: 60px auto;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-    }
-    .setup-card h2 {
-      color: #005f73;
-      margin-bottom: 10px;
-      font-size: 1.3rem;
-    }
-    .setup-card p {
-      color: #64748b;
-      font-size: 0.85rem;
-      margin-bottom: 20px;
-      line-height: 1.6;
-    }
-    .setup-card label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: #334155;
-      margin-bottom: 6px;
-      margin-top: 14px;
-    }
-    .setup-card input {
-      width: 100%;
-      padding: 12px 14px;
-      border: 2px solid #cbd5e1;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-family: inherit;
-    }
-    .setup-card input:focus {
-      outline: none;
-      border-color: #0a9396;
-    }
-    .btn-primary {
-      width: 100%;
-      padding: 13px;
-      background: linear-gradient(135deg, #005f73, #0a9396);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-weight: 800;
-      font-size: 0.95rem;
-      cursor: pointer;
-      margin-top: 20px;
-      transition: 0.2s;
-    }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(10,147,150,0.3); }
-
     /* ============= LOADER ============= */
     .loader-overlay {
       position: fixed;
@@ -446,24 +391,8 @@
 </head>
 <body>
 
-  <!-- ============= SETUP PANEL ============= -->
-  <div id="setupPanel" class="setup-card" style="display:none;">
-    <h2><i class="fa-solid fa-gear"></i> Setup Monitoring CBT</h2>
-    <p>Masukkan URL Google Apps Script Web App (deployment SIAP MAPSI) dan ID Spreadsheet respons G-Form untuk memulai pemantauan live.</p>
-    
-    <label><i class="fa-solid fa-link"></i> URL Web App GAS (SIAP MAPSI):</label>
-    <input type="text" id="inputGasUrl" placeholder="https://script.google.com/macros/s/.../exec">
-
-    <label><i class="fa-solid fa-table"></i> ID Spreadsheet Respons G-Form CBT:</label>
-    <input type="text" id="inputSpreadsheetId" placeholder="1AbC...xyz">
-
-    <button class="btn-primary" onclick="simpanSetup()">
-      <i class="fa-solid fa-play"></i> Mulai Pemantauan
-    </button>
-  </div>
-
-  <!-- ============= DASHBOARD ============= -->
-  <div id="dashboard" style="display:none;">
+  <!-- ============= DASHBOARD (LANGSUNG TAMPIL) ============= -->
+  <div id="dashboard">
     
     <!-- HEADER -->
     <div class="header">
@@ -478,9 +407,6 @@
         </div>
         <button onclick="muatData(true)" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 14px; border-radius: 20px; font-weight: 700; cursor: pointer; font-size: 0.8rem;">
           <i class="fa-solid fa-rotate-right"></i> Refresh
-        </button>
-        <button onclick="resetSetup()" style="background: transparent; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.8); padding: 8px 12px; border-radius: 20px; cursor: pointer; font-size: 0.75rem;" title="Reset Setup">
-          <i class="fa-solid fa-gear"></i>
         </button>
       </div>
     </div>
@@ -554,95 +480,58 @@
   </div>
 
   <!-- LOADER -->
-  <div id="loader" class="loader-overlay" style="display:none;">
+  <div id="loader" class="loader-overlay">
     <div class="spinner"></div>
     <p id="loaderText">Memuat data CBT...</p>
   </div>
 
 <script>
   // ==========================================
-  // KONFIGURASI & STATE
+  // KONFIGURASI (HARDCODED - GANTI DI SINI!)
   // ==========================================
-  const STORAGE_KEY = "mapsi_cbt_monitor_config";
-  let config = { gasUrl: "", spreadsheetId: "" };
+  // ⚠️ GANTI KEDUA NILAI DI BAWAH INI SEBELUM UPLOAD KE GITHUB
+  const CONFIG = {
+    // URL Web App deployment SIAP MAPSI (berakhiran /exec)
+    gasUrl: "https://script.google.com/macros/s/AKfycbyy6Dayp8HrFoW1DLy90DwzIJuLZHP0SdmaDgEwf2rbHR1TEkbBlMWVjK6Pui1Vu7XiqA/exec",
+    
+    // ID Spreadsheet respons G-Form CBT
+    // Cara ambil: buka Spreadsheet G-Form → lihat URL → copy bagian di antara /d/ dan /edit
+    spreadsheetId: "1jCf6B3tHUQS204DwpePnm4y-vmx_3wdad992sS_9roE"
+  };
+  // ==========================================
+
   let intervalId = null;
   let isFetching = false;
 
   // ==========================================
-  // INISIALISASI
+  // INISIALISASI (LANGSUNG JALAN)
   // ==========================================
   window.addEventListener('DOMContentLoaded', () => {
-    loadConfig();
+    // Validasi konfigurasi
+    if (
+      !CONFIG.gasUrl ||
+      CONFIG.gasUrl.includes('GANTI_DENGAN') ||
+      !CONFIG.spreadsheetId ||
+      CONFIG.spreadsheetId.includes('GANTI_DENGAN')
+    ) {
+      document.getElementById('loader').style.display = 'none';
+      Swal.fire({
+        icon: 'error',
+        title: 'Konfigurasi Belum Diisi',
+        html: 'Buka file <b>index.html</b> dan isi <code>CONFIG.gasUrl</code> &amp; <code>CONFIG.spreadsheetId</code> terlebih dahulu.',
+        confirmButtonColor: '#005f73'
+      });
+      return;
+    }
+
+    // Daftarkan Service Worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW gagal:', err));
     }
-  });
 
-  function loadConfig() {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        config = JSON.parse(saved);
-        if (config.gasUrl && config.spreadsheetId) {
-          document.getElementById('setupPanel').style.display = 'none';
-          document.getElementById('dashboard').style.display = 'block';
-          mulaiPemantauan();
-          return;
-        }
-      }
-    } catch (e) { console.warn(e); }
-    
-    document.getElementById('setupPanel').style.display = 'block';
-    document.getElementById('dashboard').style.display = 'none';
-    
-    // Prefill dari URL params jika ada
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('gas')) document.getElementById('inputGasUrl').value = params.get('gas');
-    if (params.get('sheet')) document.getElementById('inputSpreadsheetId').value = params.get('sheet');
-  }
-
-  function simpanSetup() {
-    const gasUrl = document.getElementById('inputGasUrl').value.trim();
-    const spreadsheetId = document.getElementById('inputSpreadsheetId').value.trim();
-
-    if (!gasUrl || !gasUrl.includes('script.google.com')) {
-      Swal.fire('Perhatian', 'URL Web App GAS tidak valid!', 'warning');
-      return;
-    }
-    if (!spreadsheetId || spreadsheetId.length < 20) {
-      Swal.fire('Perhatian', 'ID Spreadsheet tidak valid!', 'warning');
-      return;
-    }
-
-    // Extract ID dari URL jika user paste full URL
-    let cleanId = spreadsheetId;
-    const match = spreadsheetId.match(/[-\w]{25,}/);
-    if (match) cleanId = match[0];
-
-    config = { gasUrl, spreadsheetId: cleanId };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-
-    document.getElementById('setupPanel').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
+    // LANGSUNG MULAI PEMANTAUAN
     mulaiPemantauan();
-  }
-
-  function resetSetup() {
-    Swal.fire({
-      title: 'Reset Setup?',
-      text: 'Konfigurasi URL dan ID Spreadsheet akan dihapus.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Ya, Reset',
-      confirmButtonColor: '#e63946'
-    }).then(r => {
-      if (r.isConfirmed) {
-        localStorage.removeItem(STORAGE_KEY);
-        if (intervalId) clearInterval(intervalId);
-        location.reload();
-      }
-    });
-  }
+  });
 
   // ==========================================
   // PEMANTAUAN
@@ -670,7 +559,7 @@
     }
 
     try {
-      const url = `${config.gasUrl}?action=getLiveCBT&sheetId=${encodeURIComponent(config.spreadsheetId)}&t=${Date.now()}`;
+      const url = `${CONFIG.gasUrl}?action=getLiveCBT&sheetId=${encodeURIComponent(CONFIG.spreadsheetId)}&t=${Date.now()}`;
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 20000);
 
@@ -693,7 +582,12 @@
       console.error(err);
       setStatus('error', 'Koneksi terputus');
       if (showLoader) {
-        Swal.fire('Gagal Memuat', err.message, 'error');
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal Memuat',
+          text: err.message,
+          confirmButtonColor: '#005f73'
+        });
       }
     } finally {
       isFetching = false;
@@ -768,7 +662,7 @@
     const top2 = sudahSubmit[1] || null;
     const top3 = sudahSubmit[2] || null;
 
-    // RENDER PODIUM (hanya tampil yang sudah submit)
+    // RENDER PODIUM
     let podiumHTML = '';
     if (top2) podiumHTML += buatPodiumCard(top2, 2);
     if (top1) podiumHTML += buatPodiumCard(top1, 1);
@@ -782,7 +676,7 @@
     }
     podiumEl.innerHTML = podiumHTML;
 
-    // RENDER TABEL (yang sudah submit dulu, lalu yang belum)
+    // RENDER TABEL
     let html = '';
     let rank = 0;
 
@@ -803,7 +697,6 @@
         </tr>`;
     });
 
-    // Peserta yang belum submit (ditampilkan di bawah dengan opacity rendah)
     belumSubmit.forEach((p) => {
       rank++;
       html += `
