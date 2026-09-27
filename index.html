@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live CBT PAI &amp; BTQ - MAPSI 2026</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#005f73">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+
+    body {
+      background: #0b1220;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 16px;
+      overflow-x: hidden;
+    }
+
+    /* ============= HEADER ============= */
+    .header {
+      background: linear-gradient(135deg, #005f73, #0a9396);
+      border-radius: 14px;
+      padding: 18px 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 30px rgba(10, 147, 150, 0.25);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .header-left h1 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: white;
+      letter-spacing: 0.5px;
+    }
+    .header-left p {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.85);
+      margin-top: 3px;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* ============= STATUS PILL ============= */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: rgba(255,255,255,0.15);
+      color: white;
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+    .status-pill .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #4ade80;
+      animation: pulseDot 1.4s ease-in-out infinite;
+    }
+    .status-pill.warning .dot { background: #fbbf24; }
+    .status-pill.error .dot { background: #ef4444; animation: none; }
+    .status-pill.complete {
+      background: rgba(74, 222, 128, 0.25);
+      border-color: rgba(74, 222, 128, 0.5);
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
+    }
+
+    /* ============= PROGRESS GLOBAL ============= */
+    .progress-global {
+      background: white;
+      border-radius: 14px;
+      padding: 18px 22px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border-left: 5px solid #0a9396;
+    }
+    .progress-global-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .progress-global-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .progress-global-title i { color: #0a9396; margin-right: 6px; }
+    .progress-global-count {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .progress-bar-bg {
+      background: #e2e8f0;
+      height: 26px;
+      border-radius: 13px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.06);
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #0a9396, #2a9d8f, #4ade80);
+      border-radius: 13px;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      position: relative;
+      overflow: hidden;
+    }
+    .progress-bar-fill::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      animation: shimmer 2s infinite;
+    }
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+    .progress-bar-fill.complete {
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+    }
+
+    /* ============= GRID 2 KOLOM PA / PI ============= */
+    .grid-dua {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 900px) {
+      .grid-dua { grid-template-columns: 1fr; }
+    }
+
+    /* ============= KARTU KATEGORI ============= */
+    .kategori-card {
+      background: white;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+    }
+    .kategori-header {
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+    }
+    .kategori-header.pa { background: linear-gradient(135deg, #0284c7, #0ea5e9); }
+    .kategori-header.pi { background: linear-gradient(135deg, #db2777, #ec4899); }
+
+    .kategori-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .kategori-title i { font-size: 1.3rem; }
+    .kategori-count {
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: rgba(255,255,255,0.25);
+      padding: 5px 12px;
+      border-radius: 12px;
+      backdrop-filter: blur(4px);
+    }
+
+    /* ============= PODIUM TOP 3 ============= */
+    .podium-wrap {
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1.15fr 1fr;
+      gap: 10px;
+      align-items: end;
+      background: #f8fafc;
+    }
+    .podium-card {
+      border-radius: 12px;
+      padding: 14px 8px;
+      text-align: center;
+      color: white;
+      position: relative;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+      transition: transform 0.3s;
+      animation: podiumIn 0.6s ease;
+    }
+    @keyframes podiumIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .podium-card.rank-1 {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      padding: 22px 8px 18px 8px;
+      transform: scale(1.05);
+      z-index: 2;
+    }
+    .podium-card.rank-2 { background: linear-gradient(135deg, #94a3b8, #64748b); }
+    .podium-card.rank-3 { background: linear-gradient(135deg, #d97706, #b45309); }
+
+    .podium-medal {
+      font-size: 1.8rem;
+      margin-bottom: 4px;
+      display: block;
+    }
+    .podium-card.rank-1 .podium-medal { font-size: 2.2rem; }
+    .podium-no-undi {
+      font-size: 1.4rem;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .podium-card.rank-1 .podium-no-undi { font-size: 1.8rem; }
+    .podium-sekolah {
+      font-size: 0.65rem;
+      font-weight: 600;
+      line-height: 1.2;
+      opacity: 0.95;
+      margin-bottom: 6px;
+      min-height: 26px;
+    }
+    .podium-skor {
+      font-size: 0.85rem;
+      font-weight: 800;
+      background: rgba(255,255,255,0.25);
+      padding: 3px 8px;
+      border-radius: 8px;
+      display: inline-block;
+      backdrop-filter: blur(4px);
+    }
+
+    /* ============= TABEL PESERTA ============= */
+    .tabel-wrap {
+      flex: 1;
+      overflow-y: auto;
+      max-height: 55vh;
+    }
+    .tabel-wrap table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+    .tabel-wrap thead {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: #f1f5f9;
+    }
+    .tabel-wrap th {
+      padding: 10px 12px;
+      text-align: left;
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #64748b;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    .tabel-wrap td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #1e293b;
+      font-weight: 500;
+    }
+    .tabel-wrap tr:hover { background: #f8fafc; }
+    .tabel-wrap tr.top3 {
+      background: linear-gradient(90deg, rgba(251,191,36,0.08), transparent);
+    }
+    .tabel-wrap tr.top3 td { font-weight: 700; }
+
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      background: #e2e8f0;
+      color: #475569;
+    }
+    .rank-badge.gold { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; }
+    .rank-badge.silver { background: linear-gradient(135deg, #94a3b8, #64748b); color: white; }
+    .rank-badge.bronze { background: linear-gradient(135deg, #d97706, #b45309); color: white; }
+
+    .no-undi-cell {
+      font-weight: 800;
+      color: #0f172a;
+      font-size: 0.85rem;
+    }
+    .skor-cell {
+      font-weight: 800;
+      color: #0a9396;
+      font-size: 0.95rem;
+    }
+    .skor-cell.high { color: #16a34a; }
+    .sekolah-cell {
+      font-size: 0.72rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+    .belum-submit {
+      opacity: 0.45;
+    }
+
+    /* ============= EMPTY STATE ============= */
+    .empty-state {
+      padding: 40px 20px;
+      text-align: center;
+      color: #94a3b8;
+    }
+    .empty-state i { font-size: 2.5rem; margin-bottom: 10px; opacity: 0.4; }
+    .empty-state p { font-size: 0.85rem; }
+
+    /* ============= FOOTER ============= */
+    .footer-bar {
+      margin-top: 16px;
+      padding: 12px 20px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: #94a3b8;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* ============= SETUP PANEL ============= */
+    .setup-card {
+      background: white;
+      border-radius: 14px;
+      padding: 30px;
+      max-width: 550px;
+      margin: 60px auto;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+    .setup-card h2 {
+      color: #005f73;
+      margin-bottom: 10px;
+      font-size: 1.3rem;
+    }
+    .setup-card p {
+      color: #64748b;
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .setup-card label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 6px;
+      margin-top: 14px;
+    }
+    .setup-card input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-family: inherit;
+    }
+    .setup-card input:focus {
+      outline: none;
+      border-color: #0a9396;
+    }
+    .btn-primary {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, #005f73, #0a9396);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: 0.2s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(10,147,150,0.3); }
+
+    /* ============= LOADER ============= */
+    .loader-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(11,18,32,0.85);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      color: white;
+      gap: 15px;
+    }
+    .loader-overlay .spinner {
+      width: 60px; height: 60px;
+      border: 4px solid rgba(255,255,255,0.2);
+      border-top-color: #0a9396;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loader-overlay p { font-size: 0.9rem; font-weight: 600; }
+
+    /* ============= SCROLLBAR ============= */
+    .tabel-wrap::-webkit-scrollbar { width: 6px; }
+    .tabel-wrap::-webkit-scrollbar-track { background: #f1f5f9; }
+    .tabel-wrap::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    .tabel-wrap::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+  </style>
+</head>
+<body>
+
+  <!-- ============= SETUP PANEL ============= -->
+  <div id="setupPanel" class="setup-card" style="display:none;">
+    <h2><i class="fa-solid fa-gear"></i> Setup Monitoring CBT</h2>
+    <p>Masukkan URL Google Apps Script Web App (deployment SIAP MAPSI) dan ID Spreadsheet respons G-Form untuk memulai pemantauan live.</p>
+    
+    <label><i class="fa-solid fa-link"></i> URL Web App GAS (SIAP MAPSI):</label>
+    <input type="text" id="inputGasUrl" placeholder="https://script.google.com/macros/s/.../exec">
+
+    <label><i class="fa-solid fa-table"></i> ID Spreadsheet Respons G-Form CBT:</label>
+    <input type="text" id="inputSpreadsheetId" placeholder="1AbC...xyz">
+
+    <button class="btn-primary" onclick="simpanSetup()">
+      <i class="fa-solid fa-play"></i> Mulai Pemantauan
+    </button>
+  </div>
+
+  <!-- ============= DASHBOARD ============= -->
+  <div id="dashboard" style="display:none;">
+    
+    <!-- HEADER -->
+    <div class="header">
+      <div class="header-left">
+        <h1><i class="fa-solid fa-satellite-dish"></i> Live CBT PAI &amp; BTQ</h1>
+        <p>MAPSI Ke-26 Kecamatan Pracimantoro 2026 — Cerdas Cermat Penyisihan</p>
+      </div>
+      <div class="header-right">
+        <div class="status-pill" id="statusPill">
+          <span class="dot"></span>
+          <span id="statusText">Menghubungkan...</span>
+        </div>
+        <button onclick="muatData(true)" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 14px; border-radius: 20px; font-weight: 700; cursor: pointer; font-size: 0.8rem;">
+          <i class="fa-solid fa-rotate-right"></i> Refresh
+        </button>
+        <button onclick="resetSetup()" style="background: transparent; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.8); padding: 8px 12px; border-radius: 20px; cursor: pointer; font-size: 0.75rem;" title="Reset Setup">
+          <i class="fa-solid fa-gear"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- PROGRESS GLOBAL -->
+    <div class="progress-global">
+      <div class="progress-global-header">
+        <span class="progress-global-title">
+          <i class="fa-solid fa-clipboard-check"></i> Progress Submit CBT
+        </span>
+        <span class="progress-global-count" id="progressCount">0 / 0 Peserta</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressFill" style="width: 0%;">0%</div>
+      </div>
+    </div>
+
+    <!-- GRID PA / PI -->
+    <div class="grid-dua">
+      <!-- KATEGORI PA -->
+      <div class="kategori-card">
+        <div class="kategori-header pa">
+          <div class="kategori-title"><i class="fa-solid fa-mars"></i> PUTRA (PA)</div>
+          <div class="kategori-count" id="countPA">0 Peserta</div>
+        </div>
+        <div id="podiumPA" class="podium-wrap"></div>
+        <div class="tabel-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 50px;">Rank</th>
+                <th style="width: 80px;">No. Undi</th>
+                <th>Asal Sekolah</th>
+                <th style="width: 70px; text-align: right;">Skor</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyPA"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- KATEGORI PI -->
+      <div class="kategori-card">
+        <div class="kategori-header pi">
+          <div class="kategori-title"><i class="fa-solid fa-venus"></i> PUTRI (PI)</div>
+          <div class="kategori-count" id="countPI">0 Peserta</div>
+        </div>
+        <div id="podiumPI" class="podium-wrap"></div>
+        <div class="tabel-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 50px;">Rank</th>
+                <th style="width: 80px;">No. Undi</th>
+                <th>Asal Sekolah</th>
+                <th style="width: 70px; text-align: right;">Skor</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyPI"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer-bar">
+      <span><i class="fa-solid fa-clock"></i> Update terakhir: <strong id="lastUpdate">-</strong></span>
+      <span><i class="fa-solid fa-rotate"></i> Auto-refresh setiap <strong>5 detik</strong></span>
+      <span>SIAP MAPSI 2026 &copy; KKG PAI Pracimantoro</span>
+    </div>
+  </div>
+
+  <!-- LOADER -->
+  <div id="loader" class="loader-overlay" style="display:none;">
+    <div class="spinner"></div>
+    <p id="loaderText">Memuat data CBT...</p>
+  </div>
+
+<script>
+  // ==========================================
+  // KONFIGURASI & STATE
+  // ==========================================
+  const STORAGE_KEY = "mapsi_cbt_monitor_config";
+  let config = { gasUrl: "", spreadsheetId: "" };
+  let intervalId = null;
+  let isFetching = false;
+
+  // ==========================================
+  // INISIALISASI
+  // ==========================================
+  window.addEventListener('DOMContentLoaded', () => {
+    loadConfig();
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW gagal:', err));
+    }
+  });
+
+  function loadConfig() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        config = JSON.parse(saved);
+        if (config.gasUrl && config.spreadsheetId) {
+          document.getElementById('setupPanel').style.display = 'none';
+          document.getElementById('dashboard').style.display = 'block';
+          mulaiPemantauan();
+          return;
+        }
+      }
+    } catch (e) { console.warn(e); }
+    
+    document.getElementById('setupPanel').style.display = 'block';
+    document.getElementById('dashboard').style.display = 'none';
+    
+    // Prefill dari URL params jika ada
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('gas')) document.getElementById('inputGasUrl').value = params.get('gas');
+    if (params.get('sheet')) document.getElementById('inputSpreadsheetId').value = params.get('sheet');
+  }
+
+  function simpanSetup() {
+    const gasUrl = document.getElementById('inputGasUrl').value.trim();
+    const spreadsheetId = document.getElementById('inputSpreadsheetId').value.trim();
+
+    if (!gasUrl || !gasUrl.includes('script.google.com')) {
+      Swal.fire('Perhatian', 'URL Web App GAS tidak valid!', 'warning');
+      return;
+    }
+    if (!spreadsheetId || spreadsheetId.length < 20) {
+      Swal.fire('Perhatian', 'ID Spreadsheet tidak valid!', 'warning');
+      return;
+    }
+
+    // Extract ID dari URL jika user paste full URL
+    let cleanId = spreadsheetId;
+    const match = spreadsheetId.match(/[-\w]{25,}/);
+    if (match) cleanId = match[0];
+
+    config = { gasUrl, spreadsheetId: cleanId };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+
+    document.getElementById('setupPanel').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    mulaiPemantauan();
+  }
+
+  function resetSetup() {
+    Swal.fire({
+      title: 'Reset Setup?',
+      text: 'Konfigurasi URL dan ID Spreadsheet akan dihapus.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Ya, Reset',
+      confirmButtonColor: '#e63946'
+    }).then(r => {
+      if (r.isConfirmed) {
+        localStorage.removeItem(STORAGE_KEY);
+        if (intervalId) clearInterval(intervalId);
+        location.reload();
+      }
+    });
+  }
+
+  // ==========================================
+  // PEMANTAUAN
+  // ==========================================
+  function mulaiPemantauan() {
+    muatData(true);
+    if (intervalId) clearInterval(intervalId);
+    intervalId = setInterval(() => muatData(false), 5000);
+  }
+
+  function setStatus(type, text) {
+    const pill = document.getElementById('statusPill');
+    const txt = document.getElementById('statusText');
+    pill.className = 'status-pill' + (type ? ' ' + type : '');
+    txt.innerText = text;
+  }
+
+  async function muatData(showLoader) {
+    if (isFetching) return;
+    isFetching = true;
+
+    if (showLoader) {
+      document.getElementById('loader').style.display = 'flex';
+      document.getElementById('loaderText').innerText = 'Memuat data CBT...';
+    }
+
+    try {
+      const url = `${config.gasUrl}?action=getLiveCBT&sheetId=${encodeURIComponent(config.spreadsheetId)}&t=${Date.now()}`;
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 20000);
+
+      const res = await fetch(url, { method: 'GET', redirect: 'follow', signal: controller.signal });
+      clearTimeout(timeoutId);
+
+      const data = await res.json();
+
+      if (data.status !== 'success') {
+        throw new Error(data.message || 'Gagal memuat data dari server.');
+      }
+
+      renderData(data);
+      setStatus('', 'Live • Terhubung');
+
+      document.getElementById('lastUpdate').innerText =
+        new Date().toLocaleTimeString('id-ID') + ' WIB';
+
+    } catch (err) {
+      console.error(err);
+      setStatus('error', 'Koneksi terputus');
+      if (showLoader) {
+        Swal.fire('Gagal Memuat', err.message, 'error');
+      }
+    } finally {
+      isFetching = false;
+      if (showLoader) document.getElementById('loader').style.display = 'none';
+    }
+  }
+
+  // ==========================================
+  // RENDER
+  // ==========================================
+  function renderData(data) {
+    const paList = data.pa || [];
+    const piList = data.pi || [];
+    const totalPeserta = data.totalPeserta || 0;
+    const totalSubmit = data.totalSubmit || 0;
+    const allComplete = data.allComplete === true;
+
+    // PROGRESS GLOBAL
+    const persen = totalPeserta > 0 ? Math.round((totalSubmit / totalPeserta) * 100) : 0;
+    const fill = document.getElementById('progressFill');
+    fill.style.width = persen + '%';
+    fill.innerText = persen + '%';
+    fill.classList.toggle('complete', allComplete || persen >= 100);
+
+    document.getElementById('progressCount').innerText =
+      `${totalSubmit} / ${totalPeserta} Peserta ${allComplete ? '✅ SEMUA SELESAI' : ''}`;
+
+    // STATUS PILL
+    if (allComplete) {
+      setStatus('complete', '✅ Semua Peserta Sudah Submit');
+    } else if (persen > 0) {
+      setStatus('warning', `Menunggu ${totalPeserta - totalSubmit} peserta...`);
+    } else {
+      setStatus('warning', 'Menunggu submit...');
+    }
+
+    // COUNT PER KATEGORI
+    document.getElementById('countPA').innerText = paList.length + ' Peserta';
+    document.getElementById('countPI').innerText = piList.length + ' Peserta';
+
+    // RENDER PA & PI
+    renderKategori('PA', paList);
+    renderKategori('PI', piList);
+  }
+
+  function renderKategori(kategori, list) {
+    const podiumEl = document.getElementById('podium' + kategori);
+    const tbodyEl = document.getElementById('tbody' + kategori);
+
+    // SORT by skor DESC, lalu noUndi ASC
+    list.sort((a, b) => {
+      if (b.skor !== a.skor) return b.skor - a.skor;
+      return (parseInt(a.noUndi) || 9999) - (parseInt(b.noUndi) || 9999);
+    });
+
+    // Jika tidak ada peserta sama sekali
+    if (list.length === 0) {
+      podiumEl.innerHTML = '';
+      tbodyEl.innerHTML = `
+        <tr><td colspan="4" class="empty-state">
+          <i class="fa-solid fa-hourglass-half"></i>
+          <p>Belum ada peserta terdaftar untuk kategori ${kategori}.</p>
+        </td></tr>`;
+      return;
+    }
+
+    // Pisahkan peserta yang sudah submit & belum
+    const sudahSubmit = list.filter(p => p.skor > 0 || p.timestamp);
+    const belumSubmit = list.filter(p => !p.skor && !p.timestamp);
+
+    const top1 = sudahSubmit[0] || null;
+    const top2 = sudahSubmit[1] || null;
+    const top3 = sudahSubmit[2] || null;
+
+    // RENDER PODIUM (hanya tampil yang sudah submit)
+    let podiumHTML = '';
+    if (top2) podiumHTML += buatPodiumCard(top2, 2);
+    if (top1) podiumHTML += buatPodiumCard(top1, 1);
+    if (top3) podiumHTML += buatPodiumCard(top3, 3);
+
+    if (!podiumHTML) {
+      podiumHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 20px; color: #94a3b8; font-size: 0.85rem;">
+        <i class="fa-solid fa-hourglass-half" style="font-size: 1.5rem; opacity: 0.5;"></i>
+        <p style="margin-top: 6px;">Menunggu submit peserta...</p>
+      </div>`;
+    }
+    podiumEl.innerHTML = podiumHTML;
+
+    // RENDER TABEL (yang sudah submit dulu, lalu yang belum)
+    let html = '';
+    let rank = 0;
+
+    sudahSubmit.forEach((p) => {
+      rank++;
+      let rankClass = '';
+      if (rank === 1) rankClass = 'gold';
+      else if (rank === 2) rankClass = 'silver';
+      else if (rank === 3) rankClass = 'bronze';
+
+      const isTop3 = rank <= 3;
+      html += `
+        <tr class="${isTop3 ? 'top3' : ''}">
+          <td><span class="rank-badge ${rankClass}">${rank}</span></td>
+          <td><span class="no-undi-cell">${p.noUndi || '-'}</span></td>
+          <td><span class="sekolah-cell">${p.sekolah || '-'}</span></td>
+          <td style="text-align: right;"><span class="skor-cell ${rank === 1 ? 'high' : ''}">${p.skor ?? 0}</span></td>
+        </tr>`;
+    });
+
+    // Peserta yang belum submit (ditampilkan di bawah dengan opacity rendah)
+    belumSubmit.forEach((p) => {
+      rank++;
+      html += `
+        <tr class="belum-submit">
+          <td><span class="rank-badge">${rank}</span></td>
+          <td><span class="no-undi-cell">${p.noUndi || '-'}</span></td>
+          <td><span class="sekolah-cell">${p.sekolah || '-'} <em style="color:#f59e0b; font-style:normal; font-weight:600;">(belum submit)</em></span></td>
+          <td style="text-align: right;"><span class="skor-cell" style="color:#94a3b8;">-</span></td>
+        </tr>`;
+    });
+
+    tbodyEl.innerHTML = html;
+  }
+
+  function buatPodiumCard(p, rank) {
+    const medal = rank === 1 ? '🥇' : (rank === 2 ? '🥈' : '🥉');
+    return `
+      <div class="podium-card rank-${rank}">
+        <span class="podium-medal">${medal}</span>
+        <div class="podium-no-undi">${p.noUndi || '-'}</div>
+        <div class="podium-sekolah">${p.sekolah || '-'}</div>
+        <div class="podium-skor">${p.skor ?? 0} Poin</div>
+      </div>`;
+  }
+</script>
+
+</body>
+</html>

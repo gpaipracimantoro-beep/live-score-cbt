@@ -1,0 +1,26 @@
+{
+  "name": "Live CBT PAI & BTQ - MAPSI 2026",
+  "short_name": "Live CBT",
+  "description": "Pemantauan real-time peringkat CBT PAI & BTQ MAPSI Pracimantoro 2026",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#005f73",
+  "orientation": "any",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "https://lh3.googleusercontent.com/d/1o1BJzHJysMAUjTTS1Liv2_K3BTn4epCi=w192",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://lh3.googleusercontent.com/d/1o1BJzHJysMAUjTTS1Liv2_K3BTn4epCi=w512",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
