@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live CBT PAI &amp; BTQ - MAPSI 2026</title>
+  <title>Top 3 CBT PAI & BTQ - MAPSI 2026</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#005f73">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -77,13 +77,12 @@
       background: rgba(74, 222, 128, 0.25);
       border-color: rgba(74, 222, 128, 0.5);
     }
-
     @keyframes pulseDot {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.5; transform: scale(1.3); }
     }
 
-    /* ============= BANNER INSTRUKSI (BARU) ============= */
+    /* ============= BANNER INSTRUKSI ============= */
     .instruksi-banner {
       background: linear-gradient(135deg, #dc2626, #b91c1c);
       border-radius: 14px;
@@ -98,8 +97,6 @@
       position: relative;
       overflow: hidden;
     }
-
-    /* Efek kilau bergerak */
     .instruksi-banner::before {
       content: '';
       position: absolute;
@@ -116,7 +113,6 @@
       0%, 100% { box-shadow: 0 8px 30px rgba(220, 38, 38, 0.35); border-color: #fbbf24; }
       50% { box-shadow: 0 8px 40px rgba(220, 38, 38, 0.6); border-color: #fde047; }
     }
-
     .instruksi-icon {
       font-size: 2rem;
       color: #fde047;
@@ -127,7 +123,6 @@
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.6; transform: scale(1.1); }
     }
-
     .instruksi-body {
       flex: 1;
       color: white;
@@ -296,20 +291,21 @@
 
     /* ============= PODIUM TOP 3 ============= */
     .podium-wrap {
-      padding: 16px;
+      padding: 20px 16px;
       display: grid;
       grid-template-columns: 1fr 1.15fr 1fr;
       gap: 10px;
       align-items: end;
       background: #f8fafc;
+      flex: 1;
     }
     .podium-card {
       border-radius: 12px;
-      padding: 14px 8px;
+      padding: 16px 10px;
       text-align: center;
       color: white;
       position: relative;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
       transition: transform 0.3s;
       animation: podiumIn 0.6s ease;
     }
@@ -319,7 +315,7 @@
     }
     .podium-card.rank-1 {
       background: linear-gradient(135deg, #fbbf24, #f59e0b);
-      padding: 22px 8px 18px 8px;
+      padding: 26px 10px 22px 10px;
       transform: scale(1.05);
       z-index: 2;
     }
@@ -327,120 +323,55 @@
     .podium-card.rank-3 { background: linear-gradient(135deg, #d97706, #b45309); }
 
     .podium-medal {
-      font-size: 1.8rem;
-      margin-bottom: 4px;
+      font-size: 2rem;
+      margin-bottom: 6px;
       display: block;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
     }
-    .podium-card.rank-1 .podium-medal { font-size: 2.2rem; }
+    .podium-card.rank-1 .podium-medal { font-size: 2.5rem; }
+
+    .podium-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.9;
+      margin-bottom: 6px;
+    }
     .podium-no-undi {
-      font-size: 1.4rem;
+      font-size: 1.6rem;
       font-weight: 900;
       line-height: 1;
-      margin-bottom: 6px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      margin-bottom: 10px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.25);
     }
-    .podium-card.rank-1 .podium-no-undi { font-size: 1.8rem; }
-    .podium-sekolah {
-      font-size: 0.65rem;
-      font-weight: 600;
-      line-height: 1.2;
-      opacity: 0.95;
-      margin-bottom: 6px;
-      min-height: 26px;
-    }
+    .podium-card.rank-1 .podium-no-undi { font-size: 2.1rem; }
+
     .podium-skor {
-      font-size: 0.85rem;
+      font-size: 1rem;
       font-weight: 800;
-      background: rgba(255,255,255,0.25);
-      padding: 3px 8px;
-      border-radius: 8px;
+      background: rgba(255,255,255,0.28);
+      padding: 6px 12px;
+      border-radius: 10px;
       display: inline-block;
       backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,0.3);
     }
-
-    /* ============= TABEL PESERTA ============= */
-    .tabel-wrap {
-      flex: 1;
-      overflow-y: auto;
-      max-height: 55vh;
-    }
-    .tabel-wrap table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.8rem;
-    }
-    .tabel-wrap thead {
-      position: sticky;
-      top: 0;
-      z-index: 5;
-      background: #f1f5f9;
-    }
-    .tabel-wrap th {
-      padding: 10px 12px;
-      text-align: left;
-      font-size: 0.7rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      color: #64748b;
-      letter-spacing: 0.5px;
-      border-bottom: 2px solid #e2e8f0;
-    }
-    .tabel-wrap td {
-      padding: 9px 12px;
-      border-bottom: 1px solid #f1f5f9;
-      color: #1e293b;
-      font-weight: 500;
-    }
-    .tabel-wrap tr:hover { background: #f8fafc; }
-    .tabel-wrap tr.top3 {
-      background: linear-gradient(90deg, rgba(251,191,36,0.08), transparent);
-    }
-    .tabel-wrap tr.top3 td { font-weight: 700; }
-
-    .rank-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 28px;
-      height: 28px;
-      border-radius: 8px;
-      font-size: 0.75rem;
-      font-weight: 800;
-      background: #e2e8f0;
-      color: #475569;
-    }
-    .rank-badge.gold { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; }
-    .rank-badge.silver { background: linear-gradient(135deg, #94a3b8, #64748b); color: white; }
-    .rank-badge.bronze { background: linear-gradient(135deg, #d97706, #b45309); color: white; }
-
-    .no-undi-cell {
-      font-weight: 800;
-      color: #0f172a;
-      font-size: 0.85rem;
-    }
-    .skor-cell {
-      font-weight: 800;
-      color: #0a9396;
-      font-size: 0.95rem;
-    }
-    .skor-cell.high { color: #16a34a; }
-    .sekolah-cell {
-      font-size: 0.72rem;
-      color: #64748b;
-      font-weight: 500;
-    }
-    .belum-submit {
-      opacity: 0.45;
-    }
+    .podium-card.rank-1 .podium-skor { font-size: 1.15rem; }
 
     /* ============= EMPTY STATE ============= */
-    .empty-state {
-      padding: 40px 20px;
+    .empty-podium {
+      grid-column: 1 / -1;
       text-align: center;
+      padding: 40px 20px;
       color: #94a3b8;
     }
-    .empty-state i { font-size: 2.5rem; margin-bottom: 10px; opacity: 0.4; }
-    .empty-state p { font-size: 0.85rem; }
+    .empty-podium i {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      opacity: 0.4;
+    }
+    .empty-podium p { font-size: 0.85rem; }
 
     /* ============= FOOTER ============= */
     .footer-bar {
@@ -479,23 +410,16 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
     .loader-overlay p { font-size: 0.9rem; font-weight: 600; }
-
-    /* ============= SCROLLBAR ============= */
-    .tabel-wrap::-webkit-scrollbar { width: 6px; }
-    .tabel-wrap::-webkit-scrollbar-track { background: #f1f5f9; }
-    .tabel-wrap::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-    .tabel-wrap::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
   </style>
 </head>
 <body>
 
-  <!-- ============= DASHBOARD ============= -->
   <div id="dashboard">
     
     <!-- HEADER -->
     <div class="header">
       <div class="header-left">
-        <h1><i class="fa-solid fa-satellite-dish"></i> Live CBT PAI &amp; BTQ</h1>
+        <h1><i class="fa-solid fa-trophy"></i> Top 3 CBT PAI &amp; BTQ</h1>
         <p>MAPSI Ke-26 Kecamatan Pracimantoro 2026 — Cerdas Cermat Penyisihan</p>
       </div>
       <div class="header-right">
@@ -509,9 +433,7 @@
       </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- BANNER INSTRUKSI (BARU) - DI ATAS INDIKATOR REFRESH/PROGRESS -->
-    <!-- ============================================================ -->
+    <!-- BANNER INSTRUKSI -->
     <div class="instruksi-banner" id="instruksiBanner">
       <i class="fa-solid fa-triangle-exclamation instruksi-icon"></i>
       <div class="instruksi-body">
@@ -527,7 +449,6 @@
         </div>
       </div>
     </div>
-    <!-- ============================================================ -->
 
     <!-- PROGRESS GLOBAL -->
     <div class="progress-global">
@@ -551,19 +472,6 @@
           <div class="kategori-count" id="countPA">0 Peserta</div>
         </div>
         <div id="podiumPA" class="podium-wrap"></div>
-        <div class="tabel-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th style="width: 50px;">Rank</th>
-                <th style="width: 80px;">No. Undi</th>
-                <th>Asal Sekolah</th>
-                <th style="width: 70px; text-align: right;">Skor</th>
-              </tr>
-            </thead>
-            <tbody id="tbodyPA"></tbody>
-          </table>
-        </div>
       </div>
 
       <!-- KATEGORI PI -->
@@ -573,19 +481,6 @@
           <div class="kategori-count" id="countPI">0 Peserta</div>
         </div>
         <div id="podiumPI" class="podium-wrap"></div>
-        <div class="tabel-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th style="width: 50px;">Rank</th>
-                <th style="width: 80px;">No. Undi</th>
-                <th>Asal Sekolah</th>
-                <th style="width: 70px; text-align: right;">Skor</th>
-              </tr>
-            </thead>
-            <tbody id="tbodyPI"></tbody>
-          </table>
-        </div>
       </div>
     </div>
 
@@ -605,27 +500,20 @@
 
 <script>
   // ==========================================
-  // KONFIGURASI (HARDCODED - GANTI DI SINI!)
+  // KONFIGURASI
   // ==========================================
-  // ⚠️ GANTI KEDUA NILAI DI BAWAH INI SEBELUM UPLOAD KE GITHUB
   const CONFIG = {
-    // URL Web App deployment SIAP MAPSI (berakhiran /exec)
     gasUrl: "https://script.google.com/macros/s/AKfycbyy6Dayp8HrFoW1DLy90DwzIJuLZHP0SdmaDgEwf2rbHR1TEkbBlMWVjK6Pui1Vu7XiqA/exec",
-    
-    // ID Spreadsheet respons G-Form CBT
-    // Cara ambil: buka Spreadsheet G-Form → lihat URL → copy bagian di antara /d/ dan /edit
     spreadsheetId: "1jCf6B3tHUQS204DwpePnm4y-vmx_3wdad992sS_9roE"
   };
-  // ==========================================
 
   let intervalId = null;
   let isFetching = false;
 
   // ==========================================
-  // INISIALISASI (LANGSUNG JALAN)
+  // INISIALISASI
   // ==========================================
   window.addEventListener('DOMContentLoaded', () => {
-    // Validasi konfigurasi
     if (
       !CONFIG.gasUrl ||
       CONFIG.gasUrl.includes('GANTI_DENGAN') ||
@@ -642,12 +530,10 @@
       return;
     }
 
-    // Daftarkan Service Worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW gagal:', err));
     }
 
-    // LANGSUNG MULAI PEMANTAUAN
     mulaiPemantauan();
   });
 
@@ -746,96 +632,61 @@
     document.getElementById('countPA').innerText = paList.length + ' Peserta';
     document.getElementById('countPI').innerText = piList.length + ' Peserta';
 
-    // RENDER PA & PI
-    renderKategori('PA', paList);
-    renderKategori('PI', piList);
+    // RENDER TOP 3 PA & PI
+    renderTop3('PA', paList);
+    renderTop3('PI', piList);
   }
 
-  function renderKategori(kategori, list) {
+  function renderTop3(kategori, list) {
     const podiumEl = document.getElementById('podium' + kategori);
-    const tbodyEl = document.getElementById('tbody' + kategori);
 
-    // SORT by skor DESC, lalu noUndi ASC
-    list.sort((a, b) => {
-      if (b.skor !== a.skor) return b.skor - a.skor;
-      return (parseInt(a.noUndi) || 9999) - (parseInt(b.noUndi) || 9999);
-    });
+    // Ambil hanya yang sudah submit, lalu urutkan skor DESC & no undi ASC
+    const sudahSubmit = list
+      .filter(p => p.skor > 0 || p.timestamp)
+      .sort((a, b) => {
+        if (b.skor !== a.skor) return b.skor - a.skor;
+        return (parseInt(a.noUndi) || 9999) - (parseInt(b.noUndi) || 9999);
+      })
+      .slice(0, 3); // ambil top 3 saja
 
-    // Jika tidak ada peserta sama sekali
-    if (list.length === 0) {
-      podiumEl.innerHTML = '';
-      tbodyEl.innerHTML = `
-        <tr><td colspan="4" class="empty-state">
+    if (sudahSubmit.length === 0) {
+      podiumEl.innerHTML = `
+        <div class="empty-podium">
           <i class="fa-solid fa-hourglass-half"></i>
-          <p>Belum ada peserta terdaftar untuk kategori ${kategori}.</p>
-        </td></tr>`;
+          <p>Menunggu submit peserta kategori ${kategori}...</p>
+        </div>`;
       return;
     }
 
-    // Pisahkan peserta yang sudah submit & belum
-    const sudahSubmit = list.filter(p => p.skor > 0 || p.timestamp);
-    const belumSubmit = list.filter(p => !p.skor && !p.timestamp);
-
+    // Susun podium: posisi [2, 1, 3] agar juara 1 di tengah
     const top1 = sudahSubmit[0] || null;
     const top2 = sudahSubmit[1] || null;
     const top3 = sudahSubmit[2] || null;
 
-    // RENDER PODIUM
-    let podiumHTML = '';
-    if (top2) podiumHTML += buatPodiumCard(top2, 2);
-    if (top1) podiumHTML += buatPodiumCard(top1, 1);
-    if (top3) podiumHTML += buatPodiumCard(top3, 3);
-
-    if (!podiumHTML) {
-      podiumHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 20px; color: #94a3b8; font-size: 0.85rem;">
-        <i class="fa-solid fa-hourglass-half" style="font-size: 1.5rem; opacity: 0.5;"></i>
-        <p style="margin-top: 6px;">Menunggu submit peserta...</p>
-      </div>`;
-    }
-    podiumEl.innerHTML = podiumHTML;
-
-    // RENDER TABEL
     let html = '';
-    let rank = 0;
+    if (top2) html += buatPodiumCard(top2, 2);
+    if (top1) html += buatPodiumCard(top1, 1);
+    if (top3) html += buatPodiumCard(top3, 3);
 
-    sudahSubmit.forEach((p) => {
-      rank++;
-      let rankClass = '';
-      if (rank === 1) rankClass = 'gold';
-      else if (rank === 2) rankClass = 'silver';
-      else if (rank === 3) rankClass = 'bronze';
+    // Jika hanya ada 1 peserta, tetap tampilkan di posisi tengah
+    if (!top2 && !top3 && top1) {
+      html = buatPodiumCard(top1, 1);
+      podiumEl.style.gridTemplateColumns = '1fr';
+    } else {
+      podiumEl.style.gridTemplateColumns = '1fr 1.15fr 1fr';
+    }
 
-      const isTop3 = rank <= 3;
-      html += `
-        <tr class="${isTop3 ? 'top3' : ''}">
-          <td><span class="rank-badge ${rankClass}">${rank}</span></td>
-          <td><span class="no-undi-cell">${p.noUndi || '-'}</span></td>
-          <td><span class="sekolah-cell">${p.sekolah || '-'}</span></td>
-          <td style="text-align: right;"><span class="skor-cell ${rank === 1 ? 'high' : ''}">${p.skor ?? 0}</span></td>
-        </tr>`;
-    });
-
-    belumSubmit.forEach((p) => {
-      rank++;
-      html += `
-        <tr class="belum-submit">
-          <td><span class="rank-badge">${rank}</span></td>
-          <td><span class="no-undi-cell">${p.noUndi || '-'}</span></td>
-          <td><span class="sekolah-cell">${p.sekolah || '-'} <em style="color:#f59e0b; font-style:normal; font-weight:600;">(belum submit)</em></span></td>
-          <td style="text-align: right;"><span class="skor-cell" style="color:#94a3b8;">-</span></td>
-        </tr>`;
-    });
-
-    tbodyEl.innerHTML = html;
+    podiumEl.innerHTML = html;
   }
 
   function buatPodiumCard(p, rank) {
     const medal = rank === 1 ? '🥇' : (rank === 2 ? '🥈' : '🥉');
+    const label = rank === 1 ? 'Juara 1' : (rank === 2 ? 'Juara 2' : 'Juara 3');
     return `
       <div class="podium-card rank-${rank}">
         <span class="podium-medal">${medal}</span>
-        <div class="podium-no-undi">${p.noUndi || '-'}</div>
-        <div class="podium-sekolah">${p.sekolah || '-'}</div>
+        <div class="podium-label">${label}</div>
+        <div class="podium-no-undi">No. ${p.noUndi || '-'}</div>
         <div class="podium-skor">${p.skor ?? 0} Poin</div>
       </div>`;
   }
